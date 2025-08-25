@@ -14,9 +14,6 @@ importers:
       dotenv:
         specifier: ^17.2.1
         version: 17.2.1
-      mcp.js:
-        specifier: link:@modelcontextprotocol/sdk/client/mcp.js
-        version: link:@modelcontextprotocol/sdk/client/mcp.js
       zod:
         specifier: ^3.25.76
         version: 3.25.76

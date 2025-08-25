@@ -46,7 +46,6 @@
     "dependencies": {
         "@modelcontextprotocol/sdk": "^1.17.3",
         "dotenv": "^17.2.1",
-        "mcp.js": "link:@modelcontextprotocol/sdk/client/mcp.js",
         "zod": "^3.25.76"
     },
     "devDependencies": {
