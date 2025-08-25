@@ -1,0 +1,58 @@
+{
+    "name": "mcp-gitlab-server",
+    "version": "1.0.0",
+    "description": "MCP server that offers Git (branch/commit/push via git CLI) + GitLab issue creation.",
+    "license": "MIT",
+    "author": "Eva <evalin8@gmail.com>",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Evalin123/mcp-gitlab-server"
+    },
+    "homepage": "https://github.com/Evalin123/mcp-gitlab-server#readme",
+    "bugs": {
+        "url": "https://github.com/Evalin123/mcp-gitlab-server/issues"
+    },
+    "type": "module",
+    "bin": {
+        "mcp-gitlab-server": "dist/cli.js"
+    },
+    "engines": {
+        "node": ">=18"
+    },
+    "main": "dist/cli.js",
+    "types": "dist/index.d.ts",
+    "files": [
+        "dist",
+        "README.md",
+        "LICENSE",
+        ".env.example"
+    ],
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "dev": "tsx src/server.ts",
+        "build": "tsc",
+        "start": "node dist/server.js"
+    },
+    "keywords": [
+        "mcp",
+        "model context protocol",
+        "git",
+        "gitlab",
+        "issues",
+        "cli",
+        "server"
+    ],
+    "packageManager": "pnpm@10.11.0",
+    "dependencies": {
+        "@modelcontextprotocol/sdk": "^1.17.3",
+        "dotenv": "^17.2.1",
+        "mcp.js": "link:@modelcontextprotocol/sdk/client/mcp.js",
+        "zod": "^3.25.76"
+    },
+    "devDependencies": {
+        "@types/node": "^24.3.0",
+        "ts-node": "^10.9.2",
+        "tsx": "^4.20.4",
+        "typescript": "^5.9.2"
+    }
+}
