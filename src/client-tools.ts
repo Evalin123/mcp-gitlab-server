@@ -21,7 +21,7 @@ async function main() {
     const result = await client.callTool({
         name: "gitlab_create_issue",
         arguments: {
-            project: 19, // or number ID
+            project: "19", // project ID as string
             title: "MCP test Issue",
             description: "It's useing MCP server create an Issue",
             labels: ["mcp", "test"],

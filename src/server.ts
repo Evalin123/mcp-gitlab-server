@@ -53,7 +53,7 @@ export function registerTools(server: McpServer) {
             title: "Create GitLab Issue",
             description: "Create an issue in the specified GitLab project",
             inputSchema: {
-                project: z.union([z.string(), z.number()]), // "group/repo" or ID
+                project: z.string(), // "group/repo" or ID as string
                 title: z.string(),
                 description: z.string().optional(),
                 labels: z.array(z.string()).optional(),
@@ -79,11 +79,10 @@ export function registerTools(server: McpServer) {
                 };
             }
 
-            // project can be number or "group/repo"; string need to URL encode
-            const projectId =
-                typeof input.project === "number"
-                    ? String(input.project)
-                    : encodeURIComponent(String(input.project));
+            // project is always string now; if it's a numeric string, use as-is; if it contains special chars, URL encode
+            const projectId = /^\d+$/.test(input.project)
+                ? input.project
+                : encodeURIComponent(input.project);
 
             const url = `${host}/api/v4/projects/${projectId}/issues`;
 
@@ -157,7 +156,7 @@ export function registerTools(server: McpServer) {
     server.registerTool(
         "git_create_branch",
         {
-            title: "Create/Chec kout branch",
+            title: "Create/Checkout branch",
             description: "Create a new branch and checkout to it",
             inputSchema: {
                 repoPath: z.string().optional(),
