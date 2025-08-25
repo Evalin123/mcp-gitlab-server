@@ -121,7 +121,7 @@ Tools
 
 ```gitlab_create_issue```
 
--   project: number | string (required; numeric ID recommended)
+-   project: string (required; numeric ID recommended)
 
 -   title: string (required)
 
