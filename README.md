@@ -24,7 +24,7 @@ pnpm add mcp-gitlab-server
 npx mcp-gitlab-server
 ```
 
-Environment
+## Environment
 
 Create .env or set env vars:
 
@@ -32,15 +32,16 @@ Create .env or set env vars:
 GITLAB_HOST=https://gitlab.com
 GITLAB_TOKEN=glpat_xxxxxxxxxxxxxxxxx
 ```
+> For self-hosted GitLab, GITLAB_HOST is the base URL.
 
-Usage
+## Usage
 As a CLI (stdio)
 
 ```
 mcp-gitlab-server
-```
-
 # waits for an MCP client over stdio
+
+```
 
 Example client (TypeScript)
 
@@ -100,9 +101,7 @@ Claude Desktop config (example)
 
 Tools
 
-```
-git_create_branch
-```
+```git_create_branch```
 
 -   repoPath: string (optional; default: server CWD)
 
@@ -112,9 +111,7 @@ git_create_branch
 
 -   setUpstream: boolean (default: true — if auth not set, consider false)
 
-```
-git_commit_push
-```
+```git_commit_push```
 
 -   repoPath: string (required)
 
@@ -122,9 +119,7 @@ git_commit_push
 
 -   branch: string (required)
 
-```
-gitlab_create_issue
-```
+```gitlab_create_issue```
 
 -   project: number | string (required; numeric ID recommended)
 
@@ -150,27 +145,8 @@ gitlab_create_issue
 
 ---
 
-# 步驟 3：新增 `LICENSE`（建議 MIT）
-
-在專案根新增 `LICENSE`（MIT 版型）：
-
-MIT License
+## MIT License
 
 Copyright (c) 2025 Eva
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-...
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, ...
-
-（MIT 範本可直接使用，記得改年份與姓名。）
-
----
-
-# 步驟 4：檢查可執行檔與 shebang
-
-```bash
-pnpm build
-ls -l dist/cli.js
-#（macOS/Linux 可執行的話）可選：
-chmod +x dist/cli.js
-```
