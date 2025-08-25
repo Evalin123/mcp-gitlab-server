@@ -1,5 +1,5 @@
 {
-    "name": "mcp-gitlab-server",
+    "name": "@evalin/mcp-gitlab-server",
     "version": "1.0.0",
     "description": "MCP server that offers Git (branch/commit/push via git CLI) + GitLab issue creation.",
     "license": "MIT",
@@ -29,7 +29,7 @@
     ],
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "dev": "tsx src/server.ts",
+        "dev": "tsx src/cli.ts",
         "build": "tsc",
         "start": "node dist/server.js"
     },
