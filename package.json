@@ -1,5 +1,5 @@
 {
-    "name": "@evalin/mcp-gitlab-server",
+    "name": "@evalin8/mcp-gitlab-server",
     "version": "1.0.0",
     "description": "MCP server that offers Git (branch/commit/push via git CLI) + GitLab issue creation.",
     "license": "MIT",
