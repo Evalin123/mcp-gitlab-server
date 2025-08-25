@@ -8,7 +8,7 @@ import { promisify } from "util";
 
 const execAsync = promisify(exec);
 
-// 工具：建立 commit 並 push
+// tools: create commit and push
 async function gitCommitPush(
     repoPath: string,
     message: string,
@@ -46,35 +46,22 @@ async function runGit(cmd: string, cwd: string) {
 }
 
 export function registerTools(server: McpServer) {
-    // 註冊一個簡單的工具 (tool)，用來測試
-    server.registerTool(
-        "add",
-        {
-            title: "Addition Tool",
-            description: "Add two numbers",
-            inputSchema: { a: z.number(), b: z.number() },
-        },
-        async ({ a, b }) => ({
-            content: [{ type: "text", text: String(a + b) }],
-        })
-    );
-
     // --- GitLab: create issue ---
     server.registerTool(
         "gitlab_create_issue",
         {
             title: "Create GitLab Issue",
-            description: "在指定 GitLab 專案建立一則 Issue",
+            description: "Create an issue in the specified GitLab project",
             inputSchema: {
-                project: z.union([z.string(), z.number()]), // "group/repo" 或 數字ID
+                project: z.union([z.string(), z.number()]), // "group/repo" or ID
                 title: z.string(),
                 description: z.string().optional(),
                 labels: z.array(z.string()).optional(),
                 assigneeIds: z.array(z.number()).optional(),
                 milestoneId: z.number().optional(),
                 confidential: z.boolean().optional(),
-                host: z.string().optional(), // 覆寫 GITLAB_HOST（選用）
-                token: z.string().optional(), // 覆寫 GITLAB_TOKEN（選用）
+                host: z.string().optional(), // override GITLAB_HOST (optional)
+                token: z.string().optional(), // override GITLAB_TOKEN (optional)
             },
         },
         async (input: any) => {
@@ -86,11 +73,13 @@ export function registerTools(server: McpServer) {
             const token = input.token || process.env.GITLAB_TOKEN;
             if (!token) {
                 return {
-                    content: [{ type: "text", text: "❌ 缺少 GITLAB_TOKEN" }],
+                    content: [
+                        { type: "text", text: "❌ missing GITLAB_TOKEN" },
+                    ],
                 };
             }
 
-            // project 可以是數字或 "group/repo"；字串要 URL encode
+            // project can be number or "group/repo"; string need to URL encode
             const projectId =
                 typeof input.project === "number"
                     ? String(input.project)
@@ -98,7 +87,7 @@ export function registerTools(server: McpServer) {
 
             const url = `${host}/api/v4/projects/${projectId}/issues`;
 
-            // GitLab 期望的表單欄位；labels 是逗號字串；assignee_ids[] 是多值
+            // GitLab expected form fields; labels is comma-separated; assignee_ids[] is multi-value
             const body = new URLSearchParams();
             body.set("title", input.title);
             if (input.description) body.set("description", input.description);
@@ -128,7 +117,7 @@ export function registerTools(server: McpServer) {
                     content: [
                         {
                             type: "text",
-                            text: `❌ GitLab create issue 失敗：${res.status} ${text}`,
+                            text: `❌ GitLab create issue failed: ${res.status} ${text}`,
                         },
                     ],
                 };
@@ -139,7 +128,7 @@ export function registerTools(server: McpServer) {
                 content: [
                     {
                         type: "text",
-                        text: `✅ Issue #${issue.iid} 建立成功：${issue.web_url}`,
+                        text: `✅ Issue #${issue.iid} created successfully: ${issue.web_url}`,
                     },
                 ],
             };
@@ -182,11 +171,13 @@ export function registerTools(server: McpServer) {
             const branch = String(branchName).trim();
             if (!branch) {
                 return {
-                    content: [{ type: "text", text: "❌ branchName 不可為空" }],
+                    content: [
+                        { type: "text", text: "❌ branchName cannot be empty" },
+                    ],
                 };
             }
 
-            // 先確認是 git 倉庫
+            // check if it is a git repository
             const check = await runGit(
                 "git rev-parse --is-inside-work-tree",
                 cwd
@@ -196,13 +187,13 @@ export function registerTools(server: McpServer) {
                     content: [
                         {
                             type: "text",
-                            text: `❌ 這不是 git 倉庫：${cwd}\n${check.stderr}`,
+                            text: `❌ this is not a git repository: ${cwd}\n${check.stderr}`,
                         },
                     ],
                 };
             }
 
-            // 先抓已有分支
+            // get existing branches
             const list = await runGit(
                 "git branch --list --format='%(refname:short)'",
                 cwd
@@ -217,44 +208,44 @@ export function registerTools(server: McpServer) {
 
             let res;
             if (exists) {
-                // 已存在就 checkout
+                // if exists, checkout
                 res = await runGit(`git checkout ${branch}`, cwd);
                 if (!res.ok)
                     return {
                         content: [
                             {
                                 type: "text",
-                                text: `❌ checkout 失敗：\n${res.stderr}`,
+                                text: `❌ checkout failed: \n${res.stderr}`,
                             },
                         ],
                     };
             } else if (fromRef) {
-                // 從 base ref 建分支
+                // create branch from base ref
                 res = await runGit(`git checkout -b ${branch} ${fromRef}`, cwd);
                 if (!res.ok)
                     return {
                         content: [
                             {
                                 type: "text",
-                                text: `❌ 建分支失敗（from ${fromRef}）：\n${res.stderr}`,
+                                text: `❌ create branch failed (from ${fromRef}): \n${res.stderr}`,
                             },
                         ],
                     };
             } else {
-                // 直接從目前 HEAD 建
+                // create branch from current HEAD
                 res = await runGit(`git checkout -b ${branch}`, cwd);
                 if (!res.ok)
                     return {
                         content: [
                             {
                                 type: "text",
-                                text: `❌ 建分支失敗：\n${res.stderr}`,
+                                text: `❌ create branch failed: \n${res.stderr}`,
                             },
                         ],
                     };
             }
 
-            // 如果要求設 upstream，嘗試推 upstream（如果遠端不存在會建立）
+            // if setUpstream is true, try to push to upstream (if remote does not exist, it will be created)
             if (setUpstream !== false) {
                 const push = await runGit(`git push -u origin ${branch}`, cwd);
                 if (
@@ -263,12 +254,12 @@ export function registerTools(server: McpServer) {
                         push.stderr
                     )
                 ) {
-                    // 非致命，但把資訊回給使用者
+                    // not fatal, but inform the user
                     return {
                         content: [
                             {
                                 type: "text",
-                                text: `✅ 已切到 ${branch}\n⚠️ 設定 upstream 可能失敗：\n${
+                                text: `✅ checked out to ${branch}\n⚠️ setting upstream may fail: \n${
                                     push.stderr || push.stdout
                                 }`,
                             },
@@ -281,7 +272,7 @@ export function registerTools(server: McpServer) {
                 content: [
                     {
                         type: "text",
-                        text: `✅ 已切到分支：${branch}（repo: ${cwd}）`,
+                        text: `✅ checked out to ${branch} (repo: ${cwd})`,
                     },
                 ],
             };

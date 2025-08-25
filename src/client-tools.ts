@@ -1,8 +1,7 @@
-// 若升級後仍沒有這些路徑，告訴我；我們再用備案。
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 async function main() {
-    // 用 pnpm dev 啟 server（或改成 "node", ["dist/server.js"]）
+    // use pnpm dev to start server (or change to "node", ["dist/server.js"])
     const transport = new StdioClientTransport({
         command: "mcp-gitlab-server",
         args: ["dev"],
@@ -13,24 +12,24 @@ async function main() {
         version: "1.0.0",
     });
 
-    await client.connect(transport); // 會自動做 initialize/initialized 握手
+    await client.connect(transport); // will automatically do initialize/initialized handshake
 
-    // 列出工具（確認 say_hello 有被暴露）
+    // list tools (confirm say_hello is exposed)
     const tools = await client.listTools();
-    console.log("工具清單：", tools);
+    console.log("tools:", tools);
 
     const result = await client.callTool({
         name: "gitlab_create_issue",
         arguments: {
-            project: 19, // 或數字ID
+            project: 19, // or number ID
             title: "MCP test Issue",
             description: "It's useing MCP server create an Issue",
             labels: ["mcp", "test"],
-            assigneeIds: [], // 可填 ID 陣列
+            assigneeIds: [], // can fill ID array
             confidential: false,
         },
     });
-    console.log("issue 回覆：", result);
+    console.log("issue reply:", result);
 
     const resBranch = await client.callTool({
         name: "git_create_branch",
@@ -51,7 +50,7 @@ async function main() {
             branch: "test-mcp",
         },
     });
-    console.log("issue 回覆：", commitResult);
+    console.log("issue reply:", commitResult);
 
     await client.close();
 }
