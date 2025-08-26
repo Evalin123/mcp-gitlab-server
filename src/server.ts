@@ -68,7 +68,7 @@ export function registerTools(server: McpServer) {
             const host = (
                 input.host ||
                 process.env.GITLAB_HOST ||
-                "https://gitlab.com"
+                "https://gitlab.com/api/v4"
             ).replace(/\/$/, "");
             const token = input.token || process.env.GITLAB_TOKEN;
             if (!token) {
@@ -84,7 +84,7 @@ export function registerTools(server: McpServer) {
                 ? input.project
                 : encodeURIComponent(input.project);
 
-            const url = `${host}/api/v4/projects/${projectId}/issues`;
+            const url = `${host}/projects/${projectId}/issues`;
 
             // GitLab expected form fields; labels is comma-separated; assignee_ids[] is multi-value
             const body = new URLSearchParams();
