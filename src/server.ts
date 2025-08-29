@@ -1,6 +1,5 @@
 import "dotenv/config"; // 讓 process.env 可讀取 .env
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 
 import { exec } from "child_process";
