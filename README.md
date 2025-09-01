@@ -1,6 +1,7 @@
 # GitLab MCP Server
 
 An **MCP server** that provides Git workflow automation and GitLab integration for AI assistants.
+https://www.npmjs.com/package/@evalin8/mcp-gitlab-server
 
 ## Features
 
